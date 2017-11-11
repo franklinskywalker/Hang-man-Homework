@@ -1,0 +1,146 @@
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hangman Game</title>
+    <link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
+    <link href="stylesheet" type="text/css" href="swifty.css">
+
+</head>
+<style>
+    .hangmanpic {
+        width: 55px;
+        height: 45px;
+
+    }
+
+    #game {
+        text-align: center;
+        font-family: 'Bangers', cursive;
+
+    }
+</style>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+        <img class= "hangmanpic" alt="hangman" src="https://lh3.ggpht.com/RHKkf_YzgC24WVjefBEHCVwZ1alzcA15oQgfsFd0tcgQo3_fgxFmLbyIGECcrZBD4KsJ=w300">
+      </a>
+                <h1 class id="game">HANGMAN V2</h1>
+
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div id="game">
+        <p>Guess a letter</p>
+    </div>
+    <script type="text/javascript"></script>
+
+
+
+
+    <script type="text/javascript">
+        var computerChoices = ["chocolate", "vanilla", "strawberry", "lemon", "bubblegum", "half-baked"];
+        var guessesLeft = 0;
+        var currentWord;
+        var lettersGuessed = [];
+        var wins = 0;
+        var losses = 0;
+        var answerArray = [];
+
+        function resetGame() {
+            currentWord = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+            guessesLeft = 6;
+            lettersGuessed = [];
+
+            // clear and fill the answerArray with _ _ _
+            answerArray = [];
+
+            for (var i = 0; i < currentWord.length; i++) {
+                answerArray[i] = "_";
+            }
+
+            scoreOut();
+
+        }
+
+        // the output of the scoreboard to html
+
+        function scoreOut() {
+            var html =
+                "<p>The Category is Ice-Cream</p>" +
+                "<p>You've guessed: " + lettersGuessed + "</p>" +
+                "<p>Guesses Remaining: " + guessesLeft + "</p>" +
+                "<p>Wins: " + wins + "</p>" +
+                "<p>Losses: " + losses + "</p>" +
+                "<p>Progress: " + answerArray.join(" ") + "</p>";
+
+            // Set the inner HTML contents of the #game div to our html string
+            document.querySelector("#game").innerHTML = html;
+
+        }
+
+        // initial game reset
+        resetGame();
+
+
+        // append each user guessed character to an array
+        document.onkeyup = function(event) {
+
+            // Determines which key was pressed.
+            var userGuess = event.key;
+            lettersGuessed.push(userGuess);
+
+            // for each guessed character, step through the computer's word to see if it matches and see if it was badGess
+            var weWon = true;
+            var badGuess = true;
+            for (var i = 0; i < currentWord.length; i++) {
+                var oneCharFromWord = currentWord.substr(i, 1);
+                if (userGuess === oneCharFromWord) {
+                    answerArray[i] = userGuess;
+                    badGuess = false;
+                }
+                // if there are any _ you have not won
+                if (answerArray[i] === "_") {
+                    weWon = false;
+                }
+            }
+
+
+            // determine if you won and then what happens
+
+            if (weWon) {
+                wins++;
+                alert("You Won the word was " + currentWord);
+                resetGame();
+            }
+
+            // if we didin't win yet, did we lose?
+            else {
+                if (badGuess) {
+                    guessesLeft--;
+                }
+                if (guessesLeft === 0) {
+                    losses++;
+                    alert("You lost! " +
+                        "The computer was thinking of: " + currentWord);
+                    resetGame();
+                }
+                else {
+                    scoreOut();
+                }
+            }
+
+
+
+        };
+    </script>
+
+</body>
+
+</html>
